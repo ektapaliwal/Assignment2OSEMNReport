@@ -1,0 +1,122 @@
+\documentclass{article}
+
+\begin{document}
+\title {Violent Crimes in Illinois : OSEMN Report} 
+\author { Ekta Paliwal 
+\\ School of Information Technology 
+\\ Illinois State University
+\\
+\texttt{empaliw@ilstu.edu}}
+\date{\today} 
+\maketitle
+\section{Introduction}
+
+A crime is deviant behavior that violates prevailing norms or cultural values. There are different influential factors which directly or indirectly influences crime like social, political, economical and psychological. Violent crime and crime in general has been associated to various causes in today's society. These include family instability, low education and unemployment. Violent crime includes  murder, forcible rape, aggravated assault and robbery. The government of the United States has called for more actions on punishing violent crime than to spend money and time for the  prevention of the causes of violent crime.\\ \\
+The information about violent criminal offense have gathered by the FBI(Federal Bureau of Investigation’s).  The FBI collects the data from different law agencies across the Nation with the help of Uniform Crime Reporting (UCR) Program.\\
+In this report, we will work with the data about violent crimes and murders of previous ten years in Illinois, United States. We will learn how to obtain the data from Quandl and how to explore it with different commands. We will also learn how to plot graphs in this report.
+
+\section{Data Section}
+In this section, we will first learn how to obtain data from Quandl and how to clean that data for further use. After that, we will learn to explore our data, and we will display the data and brief information about it with different commands. 
+
+\begin{enumerate}
+  \item \textbf{Obtain Data from Quandl}\\
+Firstly, we will learn how to use Quandl API to collect the dataour data.
+\\ \\
+With the command below, we are pulling the data from Quandl and storing it in dataset called mydata,  the first argument specifies the name of the data that we want to pull from quandl.We need to give authentication token for extended API access. This code can be found on Quandl once you have your account in there.
+\\ \\
+\textbf{mydata <- Quandl("FBI\_UCR/USCRIME\_STATE\_ILLINOIS", authcode="nNTij-QrBEVn91UX4P4X")}
+\\ \\
+After pulling out data, with the help of head() command, we can see first six entries of our data.
+\\ \\
+\textbf{head(mydata)}
+
+\item \textbf{Scrub or Clean the Data}\\
+After data gathering, we will need to remove the unwanted data from the obtained dataset. We just want the first four columns of our data which are Year, population, Total Violent Crimes and Murders. \\
+With the help of command below, we will remove all the unwanted columns and will able to keep only first four columns in our dataset.\\ \\
+\textbf{mydata <-mydata[,1:4]}
+\\ \\
+Also, we just need data for previous ten years, so with the help of command below we will keep first ten rows in our dataset.
+\\ \\
+\textbf{mydata <-mydata[1:11,]}
+
+\item \textbf{Exploring of Data}\\
+After scrubbing of our data, we can analyze our data View command as given below. We can just need to specify the name of our dataset, it will display our data accordingly.\\
+\\
+\textbf{View(mydata)}
+\\ \\
+For more exploring of our data, we need to write csv file for this. 
+We will do this with the help of command shown below. This write.csv command will take the dataframe as its first document and name of the new csv file as its second argument.\\
+\\
+\textbf{write.csv(mydata, "crimedata.csv")}
+
+\item \textbf{More Exploring}\\
+In this section, we will do more exploring of our data. We will discover more about our crime data. We will also find out that how to use str(), summary() and class() commands to analyze our data.
+\\ \\
+This report represents  data of previous ten years about violent crimes in Illinois, United States. The data also have statistics about the population in Illinois. There are four columns in our data, from which one is holding information of the last ten years, and it is of date datatype. Second column contains information of the population according to the year column, and it is of number datatype. Third column represent data about total number of violent crimes and the fourth column precisely represent the data on murders and nonnegligent manslaughters, and these both columns are of number data type.Below is our data shown in table.
+\\ \\
+To start with, we need to have a dataframe, so we will create new data frame by reading csv file that we have created earlier in the report.
+\\ \\
+The read command will take three arguments. The first argument will be the name of the file that we want to read. Second argument is the logical value that represents that the file has the names of variables on the fist line of it or not. Third argument is the separator. In our case, the separator is a comma because in csv file variables or columns are separated by comma. 
+
+<<>>= 
+# Read the data from csv file 
+crimeData <- read.csv(file="crimedata.csv", header=TRUE, sep=",")
+@
+
+
+<<>>=
+# class() command will show the class of our data, which in this case is dataframe
+class(crimeData)
+@ 
+
+<<>>=
+# summary() command will show the brief statistics like minimum, maximum, average about each column of our data
+summary(crimeData)
+@
+
+<<>>=
+# str() command will display the internal structure mostly similar to summary(), it displays the datatype of columns with their values 
+str(crimeData)
+@
+
+To work with data, we need to rename the column name and eliminate any confusion while plotting our graphs. To do so, below is the rename command which takes two arguments. First argument is the data frame whose column names need to be change and second argument will take names of existing column on one side and their new names on other.
+
+<<>>=
+library(plyr)
+crimeData <- rename(crimeData, c("Violent.Crimes.Total"="TotalC", "Murders.and.Nonnegligent.Manslaughters"="Murders"))
+@
+\end{enumerate}
+
+\section{Result}
+In our result section, we will do more exploring of our data. From the table below, we can see that the total number of violent crimes has been decreased from year 2000 to 2010. However, if we analyze the data carefully, we can found some strange facts about murders and nonnegligent manslaughters. If we compared the data of year 2001-2002 to year 2000, we can see that the number of murders was increased. 
+
+<<>>=
+crimeData
+@
+\emph{Table 1}
+\\
+To plot our data on the graph, firstly, we need to add some important packages. These packages will provide us with the functionality of plotting the graph. With the help of library() function, we will add those packages as shown below in the code chunk.
+\\ \\
+After adding packages, we need to rescale our data so that it can be displayed appropriately on the graph. For the Population column, we are dividing it by 1000 and for the TotalC column, we are dividing it by 10. 
+\\ \\
+After the above step, we are using melt function that is provided by reshape2 package. With the help of melt function, we are converting our dataset into a molten dataframe. Melt command is taking name of the data set to melt as its first argument and name of the variable that is used to store values as its second argument.
+\\ \\
+Now, in the next step, we are finally plotting our graph by using ggplot. We are using our molted data frame to plot the graph. First, we are specifying the name of our data frame and then we are mapping our X and Y axis of the graph by giving values of variables from our data frame. We want our graph as a line graph, so after specifying above details we will use geom\_line() function to draw a line graph. In this function, we are just doing aesthetic mapping with colour aesthetics.
+
+<<>>=
+library(reshape2)
+library(ggplot2)
+crimeData$Population <- crimeData$Population / 1000
+crimeData$TotalC <- crimeData$TotalC / 10
+# we are removing unwanted column X with the help of below command
+crimeData.new <-crimeData[,-1]
+crimeData.m <- melt(crimeData.new, id="Year")
+ggplot(data=crimeData.m, aes(x=Year, y=value )) + geom_line(aes(colour=variable,group=variable))  + ggtitle("Violent Crime and Murders in Illinois USA") +theme(plot.title = element_text(lineheight=.8, face="bold"))
+
+@
+
+Above is the graph showing our crime data. We can clearly state from the graph that the total number of violent crimes has been gradually decreasing from year 2000-2010. There is no significant change in the number of murders in Illinois. And there is no remarkable increase in the population of Illinois. \\
+\\
+To reduce the violent crimes at its maximum, the government should invest more in social programs on the local level and also give emphasis on educating people.
+
+\end{document}
