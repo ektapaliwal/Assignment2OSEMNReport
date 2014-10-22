@@ -117,6 +117,6 @@ ggplot(data=crimeData.m, aes(x=Year, y=value )) + geom_line(aes(colour=variable,
 
 Above is the graph showing our crime data. We can clearly state from the graph that the total number of violent crimes has been gradually decreasing from year 2000-2010. There is no significant change in the number of murders in Illinois. And there is no remarkable increase in the population of Illinois. \\
 \\
-To reduce the violent crimes at its maximum, the government should invest more in social programs on the local level and also give emphasis on educating people.
+To reduce the violent crimes, the government should invest more in social programs on the local level and also give emphasis on educating people.
 
 \end{document}
